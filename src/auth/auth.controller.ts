@@ -8,7 +8,7 @@ export class AuthController {
   //   POST /auth/signup
   @Post('signup')
   signup(@Body() dto: AuthDto) {
-    return this.authService.signup();
+    return this.authService.signup(dto);
   }
 
   //   POST /auth/signin
