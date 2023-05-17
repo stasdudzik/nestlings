@@ -80,7 +80,11 @@ describe('App e2e', () => {
           .spec()
           .post('/auth/signin')
           .withBody(dto)
-          .expectStatus(200);
+          .expectStatus(200)
+          .stores(
+            'userAccessToken', // variable name
+            'access_token', // body key we want to store, look it up with .inspect()
+          );
       });
 
       it('should throw if email empty', () => {
@@ -110,7 +114,19 @@ describe('App e2e', () => {
   });
 
   describe('User', () => {
-    describe('Get me', () => {});
+    describe('Get me', () => {
+      it('should get current user', () => {
+        return pactum
+          .spec()
+          .get('/users/me')
+          .withHeaders({
+            Authorization:
+              'Bearer $S{userAccessToken}', //this syntax is part of pactum to inject values we stored before - access_token
+          })
+          .inspect()
+          .expectStatus(200);
+      });
+    });
 
     describe('Edit user', () => {});
   });
