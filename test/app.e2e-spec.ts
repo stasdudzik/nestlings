@@ -26,22 +26,23 @@ describe('App e2e', () => {
     await app.listen(3333);
     prisma = app.get(PrismaService);
     await prisma.cleanDb();
+    pactum.request.setBaseUrl(
+      'http://localhost:3333',
+    );
   });
   afterAll(() => {
     app.close();
   });
   describe('Auth', () => {
+    const dto: AuthDto = {
+      email: 'brigitte@gmail.com',
+      password: '123',
+    };
     describe('Signup', () => {
       it('should signup', () => {
-        const dto: AuthDto = {
-          email: 'brigitte@gmail.com',
-          password: '123',
-        };
         return pactum
           .spec()
-          .post(
-            'http://localhost:3333/auth/signup',
-          )
+          .post('/auth/signup')
           .withBody(dto)
           .expectStatus(201);
         // if you want you can look inside the request
@@ -50,7 +51,13 @@ describe('App e2e', () => {
     });
 
     describe('Signin', () => {
-      it.todo('should signin');
+      it('should signin', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody(dto)
+          .expectStatus(200);
+      });
     });
   });
   describe('User', () => {
